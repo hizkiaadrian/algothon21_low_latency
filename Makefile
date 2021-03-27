@@ -1,9 +1,9 @@
 ifdef OS
-   RM = rmdir /q /s
+   RM = @rmdir /q /s
 	 MK = @rmdir bin & mkdir
 else
    ifeq ($(shell uname), Linux)
-      RM = rm -f
+      RM = @rm -f
 			MK = @mkdir -p
    endif
 endif
