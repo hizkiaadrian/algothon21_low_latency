@@ -7,7 +7,7 @@
 class Predictor {
   public:
     Predictor(std::vector<float>& historicalData, float tau) : historicalData(historicalData), tau(tau) {
-      
+
     };
 
     ~Predictor() {};
@@ -49,7 +49,6 @@ std::vector<float> splitCsv(std::string input) {
 
 int main() {
   std::string input;
-  
   while (std::cin >> input) {
     std::vector<float> historicalData = splitCsv(input);
 
