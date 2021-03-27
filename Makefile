@@ -3,7 +3,7 @@ ifdef OS
 	 MK = @rmdir bin & mkdir
 else
    ifeq ($(shell uname), Linux)
-      RM = @rm -f
+      RM = @rm -rf
 			MK = @mkdir -p
    endif
 endif
