@@ -1,10 +1,14 @@
 #include <iostream>
+#include <string>
 #include <vector>
 #include <math.h>
+#include <sstream>
 
 class Predictor {
   public:
-    Predictor(float tau) : tau(tau) {};
+    Predictor(std::vector<float>& historicalData, float tau) : historicalData(historicalData), tau(tau) {
+      
+    };
 
     ~Predictor() {};
 
@@ -13,9 +17,7 @@ class Predictor {
     float tau;
 
   public:
-    bool predict(float newestData) {
-      historicalData.push_back(newestData);
-
+    bool predict() {
       return calculateExpectedReturns() >= 0;
     }
 
@@ -35,12 +37,24 @@ class Predictor {
     }
 };
 
-int main() {
-  float input;
+std::vector<float> splitCsv(std::string input) {
+  std::vector<float> result;
 
-  Predictor predictor(0.5f);
+  std::stringstream ss(input);
+  std::string str;
+  while (std::getline(ss, str, ',')) result.push_back(std::stof(str));
+
+  return result;
+};
+
+int main() {
+  std::string input;
+  
   while (std::cin >> input) {
-    std::cout << predictor.predict(input) << std::endl;
+    std::vector<float> historicalData = splitCsv(input);
+
+    Predictor predictor(historicalData, 0.5f);
+    std::cout << predictor.predict() << std::endl;
   }
 
   return 0;
