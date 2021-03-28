@@ -4,57 +4,67 @@
 #include <math.h>
 #include <sstream>
 
-class Predictor {
-  public:
-    Predictor(std::vector<float>& historicalData, float tau) : historicalData(historicalData), tau(tau) {
+using namespace std;
 
-    };
+class Predictor
+{
+public:
+  Predictor(vector<float> &historicalData, short window) : historicalData(historicalData), window(window){};
 
-    ~Predictor() {};
+  ~Predictor(){};
 
-  public: 
-    std::vector<float> historicalData;
-    float tau;
+public:
+  vector<float> historicalData;
+  short window;
 
-  public:
-    bool predict() {
-      return calculateExpectedReturns() >= 0;
+public:
+  bool predict()
+  {
+    return calculateExpectedReturns() >= 0;
+  }
+
+private:
+  float calculateExpectedReturns()
+  {
+    int nextPeriod = (int)historicalData.size();
+
+    float sum = 0, lambda = ((float)window - 1) / ((float)window + 1);
+    float theta;
+
+    for (int i=0; i < nextPeriod; i++) {
+      theta = (1 - lambda) * pow(lambda, i);
+      sum += historicalData[nextPeriod - i - 1] * theta;
     }
 
-  private:
-    float calculateExpectedReturns() {
-      int nextPeriod = (int) historicalData.size();
-
-      float num = 0, denom = 0;
-
-      for (int i=0; i < nextPeriod; i++) {
-        float expTerm = exp(-tau * (nextPeriod - i));
-        num += historicalData[i] * expTerm;
-        denom += expTerm;
-      }
-
-      return num/denom;
-    }
+    return sum;
+  }
 };
 
-std::vector<float> splitCsv(std::string input) {
-  std::vector<float> result;
+int main()
+{
+  std::vector<float> vec;
+  Predictor predictor(vec, 15);
 
-  std::stringstream ss(input);
-  std::string str;
-  while (std::getline(ss, str, ',')) result.push_back(std::stof(str));
+  string input;
+  while (std::cin >> input)
+  {
+    predictor.historicalData = splitCommas(input);
 
-  return result;
-};
-
-int main() {
-  std::string input;
-  while (std::cin >> input) {
-    std::vector<float> historicalData = splitCsv(input);
-
-    Predictor predictor(historicalData, 0.5f);
-    std::cout << predictor.predict() << std::endl;
+    cout << predictor.predict() << endl;
   }
 
   return 0;
 }
+
+/*Function to split comma-delimited string of floats into a vector of floats*/
+vector<float> splitCommas(string input)
+{
+  vector<float> result;
+
+  stringstream ss(input);
+  string str;
+  while (getline(ss, str, ','))
+    result.push_back(stof(str));
+
+  return result;
+};
